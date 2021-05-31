@@ -14,16 +14,17 @@ imgRGB = cv2.cvtColor(imgBGR,cv2.COLOR_BGR2RGB)
 #using pytesseract OCR functions
 #print(pytesseract.image_to_string(imgRGB)) #prints detected text
 #print(pytesseract.image_to_boxes(imgRGB)) #prints dimensions of character bounding boxes
-boxes = pytesseract.image_to_boxes(imgRGB)
-#print(type(boxes)) #boxes is just a string of data that divided with newlines and spaces so boxes.splitlines to be used
 
 #calculating height of image
 height = imgBGR.shape[0]
 
-'''###---------- DETECTING CHARACTERS ----------###
+###---------- DETECTING CHARACTERS ----------###
 
 #iterating through each box
 #.splitlines used because image to boxes returns list not array.
+
+boxes = pytesseract.image_to_boxes(imgRGB)
+#print(type(boxes)) #boxes is just a string of data that divided with newlines and spaces so boxes.splitlines to be used
 
 for box in boxes.splitlines():
 
@@ -43,20 +44,6 @@ for box in boxes.splitlines():
 
     #adding character to image (+15 is added to offset text from box)
     cv2.putText(imgBGR,box[0],(x,y+15),cv2.FONT_HERSHEY_SIMPLEX,.5,(125,0,255),2)
-'''
-
-###---------- DETECTING WORDS ----------###
-#extracting words from file
-boxes = pytesseract.image_to_data(imgRGB)
-
-#iterating through each box
-#.splitlines is required as tesseract OCR function returns a string
-for box in boxes.splitlines():
-
-    #box is an str and needs to be turned into a list
-    box = box.split("\t")
-
-    print(box)
 
 
 #displaying result
