@@ -5,6 +5,8 @@ path = "Resources/Shapes.png" #path to image
 
 #defining function to get contours
 def getContours(img):
+
+    # extracting contours & hierarchy
     contours,hierarchy = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE) #gathers the outermost contours
 
     #for each contour
