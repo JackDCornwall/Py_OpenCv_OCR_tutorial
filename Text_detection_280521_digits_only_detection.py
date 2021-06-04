@@ -19,8 +19,14 @@ imgRGB = cv2.cvtColor(imgBGR,cv2.COLOR_BGR2RGB)
 height = imgBGR.shape[0]
 
 ###---------- DETECTING WORDS ----------###
+#creating config file
+conf = r'--oem 3 --psm 6 outputbase digits'
+#oem 3 is the default tesseract engine
+#psm 6 assuumes a single uniform block of text
+#more settings can be found here: https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc
+
 #extracting words from file
-boxes = pytesseract.image_to_data(imgRGB)
+boxes = pytesseract.image_to_data(imgRGB,config = conf)
 
 #creating counter
 count = 0
@@ -52,20 +58,6 @@ for box in boxes.splitlines():
 
             #adding text to image
             cv2.putText(imgBGR,box[11],(x,y+60),cv2.FONT_HERSHEY_SIMPLEX,1,(125,0,255),2)
-
-        #print(len(box))
-        #print(box)
-
-
-
-
-
-    #we can now extract the bounding box dimensions
-    #please note that the columns are different when using image_to_data vs image_to_boxes
-    #
-
-#print(boxes)
-
 
 #displaying result
 cv2.imshow("Result",imgBGR)
