@@ -9,6 +9,11 @@ width = 250
 height = 350
 
 #defining the 4 corner points as a numpy array of floats
+#in the following order:
+#1.top left
+#2.top right
+#3.bottom left
+#4.bottom right
 ptsOld = np.float32([[111,219],[287,188],[154,482],[352,440]])
 #these are the points on the original image
 

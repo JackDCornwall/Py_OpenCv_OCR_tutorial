@@ -5,7 +5,7 @@ import pytesseract
 #pointing to our OCR tesseract install
 pytesseract.pytesseract.tesseract_cmd = "C://Users/Jack/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 
-imgBGR = cv2.imread("Resources/test_text_4.png") #importing image to read
+imgBGR = cv2.imread("Resources/test_text_2.png") #importing image to read
 
 #pytesseract only accepts RGB images and openCV is BGR by default
 #converting image to RGB
