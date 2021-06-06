@@ -1,6 +1,6 @@
 https://www.youtube.com/watch?v=WQeoO7MI0Bs [Open CV course for python] - (in progress)
 
-https://www.youtube.com/watch?v=6DjFscX4I_c[Text detection] - (in progress)
+https://www.youtube.com/watch?v=6DjFscX4I_c[Completed] - (in progress)
 https://github.com/UB-Mannheim/tesseract/wiki [Tesseract OCR installer download]
 C:\Users\Jack\AppData\Local\Programs\Tesseract-OCR [Install directory]
 
@@ -17,4 +17,5 @@ https://www.youtube.com/watch?v=FaJjEAFOmGs&t=1069s [Git usage guide] - (complet
 https://docs.opencv.org/master/modules.html [OpenCV documentation]
 https://docs.opencv.org/master/d6/d00/tutorial_py_root.html [OpenCV documentation]
 https://muthu.co/all-tesseract-ocr-options/ [Tesseract OCR documentation]
+https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc [Tesseract OCR documentation]
 
