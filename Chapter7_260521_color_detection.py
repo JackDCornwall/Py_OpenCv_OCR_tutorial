@@ -36,6 +36,11 @@ def update(a):
     #We can move the slide bars around affecting the white and black part of the image.
     #We can then use the rest of the software to detect the color of the white part.
 
+    # taking only white pixels from mask out of img
+    imgOut = cv2.bitwise_and(img, img, mask=mask)  # the above function checks where the pixels are both present and
+
+    cv2.imshow("Final Output", imgOut)
+
 path = "Resources/Lambo.png" #path to image
 
 img = cv2.imread(path) #importing image
@@ -76,17 +81,13 @@ while True:
 
     #creating mask using trackbar values
     mask = cv2.inRange(imgHSV,lower,upper)
+#this is not required as we dont need to keep bringing in new frames like with a webcam. Simply moving the trackbars
+updates the mask
 '''
 
 #displaying images
 cv2.imshow("Original image",img)
 cv2.imshow("HSV image",imgHSV)
 update(0) #running update once so that the mask image is shown.
-cv2.imshow("Mask",mask)
-
-#taking only white pixels from mask out of img
-imgOut = cv2.bitwise_and(img,img,mask=mask) #the above function checks where the pixels are both present and
-
-cv2.imshow("Final Output",imgOut)
 
 cv2.waitKey(0) #indefinite delay
