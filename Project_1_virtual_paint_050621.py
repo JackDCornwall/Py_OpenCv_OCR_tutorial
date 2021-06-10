@@ -8,12 +8,15 @@
 #Date: 05.06.21
 #Description: Using a webcam to pick up different coloured pens and trace a colour on the screen
 Settings from Color_picker_060621.py:
-Green bic pen lid: Hue min: 47 | Hue max: 73 | Sat min: 40 | Sat max: 88 | Val min: 44 | Val max: 255
-Red bic pen lid: Hue min: 168 | Hue max: 179 | Sat min: 112 | Sat max: 201 | Val min: 130 | Val max: 255
-Blue bic pen lid: Hue min: 102 | Hue max: 115 | Sat min: 149 | Sat max: 226 | Val min: 118 | Val max: 255
-Purple bic pen lid: Hue min: 118 | Hue max: 132 | Sat min: 63 | Sat max: 153 | Val min: 148 | Val max: 255
+Green bic pen lid: Hue min: 70 | Hue max: 86 | Sat min: 46 | Sat max: 150 | Val min: 95 | Val max: 255
+Light green bic pen lid: Hue min: 34 | Hue max: 55 | Sat min: 46 | Sat max: 104 | Val min: 74 | Val max: 255
+Red bic pen lid: Hue min: 163 | Hue max: 175 | Sat min: 124 | Sat max: 215 | Val min: 172 | Val max: 255
+pink bic pen lid: Hue min: 136 | Hue max: 169 | Sat min: 25 | Sat max: 94 | Val min: 190 | Val max: 255
+Blue bic pen lid: Hue min: 80 | Hue max: 120 | Sat min: 120 | Sat max: 255 | Val min: 216 | Val max: 255
+Light blue bic pen lid: Hue min: 83 | Hue max: 97 | Sat min: 33 | Sat max: 141 | Val min: 234 | Val max: 255
+Purple marker pen lid: Hue min: 113 | Hue max: 125 | Sat min: 43 | Sat max: 108 | Val min: 159 | Val max: 255
+However these will vary by lighting condition and camera used
 '''
-
 #importing required packages
 import cv2
 import numpy as np
@@ -32,16 +35,15 @@ cap.set(10, 130) #setting brightness
 
 #mask values in the following order:
 #Hue min|Hue max|Sat min|Sat max|Val min|Val max
-green = [47,73,40,88,44,255]
-red = [168,179,112,201,130,255]
-blue = [102,115,149,226,118,255]
-purple = [118,132,63,153,148,255]
+green = [79,88,72,133,102,255]
+red = [163,175,124,215,172,255]
+light_blue = [88,105,86,148,250,255]
+purple = [133,125,43,108,159,255]
 
 #list of all mask values to iterate through
-my_colours = np.array([green, red, blue, purple])
-col_names = ["green","red","blue","purple"]
+my_colours = np.array([green, red, light_blue, purple])
+col_names = ["green","red","light blue","purple"]
 
-#function to find colours
 def findColours(img,colors):
 
     #converting input image to HSV colorspace
@@ -56,7 +58,6 @@ def findColours(img,colors):
     count = 0 #counter to run through colour names
     for color in colors:
 
-
         #setting mask values taken from description above and found with Color_picker
         lower = np.array(color[min_vals])
         upper = np.array(color[max_vals])
@@ -64,18 +65,54 @@ def findColours(img,colors):
         #creating mask using trackbar values
         mask = cv2.inRange(imgHSV,lower,upper)
 
+        #extracting contours for mask
+        getContours(mask)
+
         #displaying mask for testing purposes
-        cv2.imshow(str(col_names[count]),mask)
+        #cv2.imshow(str(col_names[count]),mask)
 
         count = count + 1 #iterating counter
 
-#runnign webcam until q is pressed
+    #getContours(mask)
+
+#creating function that will get the bounding box of "on" pixels
+def getContours(img):
+
+    #extracting contours
+    contours,hierarchy = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+
+    #iterating through each contour
+    for cnt in contours:
+
+        #calculating contour area
+        area = cv2.contourArea(cnt)
+
+        #disregarding any small contour
+        if area>500:
+
+            #drawing contours
+            cv2.drawContours(imgOut,cnt,-1,(255,0,0),3)
+
+            #calculating perimeter
+            peri = cv2.arcLength(cnt,True)
+
+            #calculating approximate corners
+            approx = cv2.approxPolyDP(cnt,0.02*peri,True)
+
+            #extracting contour boundary coordinates & size
+            x,y,w,h = cv2.boundingRect(approx)
+
+#continuously looping
 while True:
     #importing webcam feed frame to img
     success, img = cap.read()
 
-    cv2.imshow("Result",img) #dispaying image frame in "Results window"
+    #final output image
+    imgOut = img.copy()
+
     findColours(img,my_colours) #running function to capture colours
+
+    cv2.imshow("Result", imgOut)  # dispaying image frame in "Results window"
 
     #creating escape
     if cv2.waitKey(1) % 0xFF == ord("q"):
