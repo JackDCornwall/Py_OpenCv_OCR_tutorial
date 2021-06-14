@@ -7,15 +7,8 @@
 #Project: Virtual paint
 #Date: 05.06.21
 #Description: Using a webcam to pick up different coloured pens and trace a colour on the screen
-Settings from Color_picker_060621.py:
-Green bic pen lid: Hue min: 70 | Hue max: 86 | Sat min: 46 | Sat max: 150 | Val min: 95 | Val max: 255
-Light green bic pen lid: Hue min: 34 | Hue max: 55 | Sat min: 46 | Sat max: 104 | Val min: 74 | Val max: 255
-Red bic pen lid: Hue min: 163 | Hue max: 175 | Sat min: 124 | Sat max: 215 | Val min: 172 | Val max: 255
-pink bic pen lid: Hue min: 136 | Hue max: 169 | Sat min: 25 | Sat max: 94 | Val min: 190 | Val max: 255
-Blue bic pen lid: Hue min: 80 | Hue max: 120 | Sat min: 120 | Sat max: 255 | Val min: 216 | Val max: 255
-Light blue bic pen lid: Hue min: 83 | Hue max: 97 | Sat min: 33 | Sat max: 141 | Val min: 234 | Val max: 255
-Purple marker pen lid: Hue min: 113 | Hue max: 125 | Sat min: 43 | Sat max: 108 | Val min: 159 | Val max: 255
-However these will vary by lighting condition and camera used
+Settings from Color_picker_060621.py vary to much to annotate based on light source (window open/time of day),
+room we are in or even webcam, these should be gathered at the start of each run
 '''
 #importing required packages
 import cv2
@@ -35,19 +28,30 @@ cap.set(10, 130) #setting brightness
 
 #mask values in the following order:
 #Hue min|Hue max|Sat min|Sat max|Val min|Val max
-green = [79,88,72,133,102,255]
-red = [163,175,124,215,172,255]
-light_blue = [88,105,86,148,250,255]
-purple = [133,125,43,108,159,255]
+green = [74,87,106,146,86,198]
+red = [167,177,116,204,174,255]
+light_blue = [75,110,111,168,236,251]
+purple = [111,125,41,127,163,255]
+
+#color values to be drawn
+color_values = [
+    [0,255,0],
+    [0,0,255],
+    [255,255,0],
+    [255,0,255]
+]
 
 #list of all mask values to iterate through
 my_colours = np.array([green, red, light_blue, purple])
 col_names = ["green","red","light blue","purple"]
 
-def findColours(img,colors):
+#function that extracts colors
+def findColours(img,colors,color_vals):
 
     #converting input image to HSV colorspace
     imgHSV = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+
+    count = 0 #setting counter to zero which will loop through BGR colour values
 
     #required to subset colors
     min_vals = [True,False,True,False,True,False]
@@ -66,7 +70,10 @@ def findColours(img,colors):
         mask = cv2.inRange(imgHSV,lower,upper)
 
         #extracting contours for mask
-        getContours(mask)
+        x,y = getContours(mask) #we are also getting returned tip of pen points
+
+        #now we can draw a circle around those values and draw in on image results
+        cv2.circle(imgOut,(x,y),10,color_vals[count],cv2.FILLED)
 
         #displaying mask for testing purposes
         #cv2.imshow(str(col_names[count]),mask)
@@ -81,6 +88,9 @@ def getContours(img):
     #extracting contours
     contours,hierarchy = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
 
+    # returning zeroes in case nothing is detected (this needs to be run before the if statement)
+    x, y, w, h = 0, 0, 0, 0
+
     #iterating through each contour
     for cnt in contours:
 
@@ -88,10 +98,10 @@ def getContours(img):
         area = cv2.contourArea(cnt)
 
         #disregarding any small contour
-        if area>500:
+        if area>300:
 
             #drawing contours
-            cv2.drawContours(imgOut,cnt,-1,(255,0,0),3)
+            #cv2.drawContours(imgOut,cnt,-1,(255,0,0),3) #this is commented out once we know we are detecting it propperly
 
             #calculating perimeter
             peri = cv2.arcLength(cnt,True)
@@ -102,6 +112,10 @@ def getContours(img):
             #extracting contour boundary coordinates & size
             x,y,w,h = cv2.boundingRect(approx)
 
+
+    #returning the value of the tip
+    return x+(w//2),y
+
 #continuously looping
 while True:
     #importing webcam feed frame to img
@@ -110,7 +124,7 @@ while True:
     #final output image
     imgOut = img.copy()
 
-    findColours(img,my_colours) #running function to capture colours
+    findColours(img,my_colours,color_values) #running function to capture colours
 
     cv2.imshow("Result", imgOut)  # dispaying image frame in "Results window"
 
