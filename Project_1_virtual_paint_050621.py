@@ -15,8 +15,8 @@ import cv2
 import numpy as np
 
 #setting width and frame of our height
-frameWidth = 640
-frameHeight = 480
+frameWidth = 1920
+frameHeight = 1080
 
 #importing webcam
 cap = cv2.VideoCapture(0) #0 is the default webcam of the device
@@ -28,22 +28,25 @@ cap.set(10, 130) #setting brightness
 
 #mask values in the following order:
 #Hue min|Hue max|Sat min|Sat max|Val min|Val max
-green = [74,87,106,146,86,198]
-red = [167,177,116,204,174,255]
-light_blue = [75,110,111,168,236,251]
-purple = [111,125,41,127,163,255]
+pink = [163,172,90,163,135,255]
+light_blue = [98,104,89,165,125,249]
+blue = [108,125,104,183,64,219]
+purple = [118,138,60,127,92,255]
 
 #color values to be drawn
 color_values = [
-    [0,255,0],
-    [0,0,255],
+    [125,0,255],
     [255,255,0],
+    [255,0,0],
     [255,0,255]
 ]
 
+#starting empty list to store points drawn
+points = [] #[x, y , colorID]
+
 #list of all mask values to iterate through
-my_colours = np.array([green, red, light_blue, purple])
-col_names = ["green","red","light blue","purple"]
+my_colours = np.array([pink, light_blue, blue, purple])
+col_names = ["pink","light blue","blue","purple"]
 
 #function that extracts colors
 def findColours(img,colors,color_vals):
@@ -57,8 +60,9 @@ def findColours(img,colors,color_vals):
     min_vals = [True,False,True,False,True,False]
     max_vals = [False,True,False,True,False,True]
 
-    #running through each color
+    newPoints = []#starting empty list for new points
 
+    # running through each color
     count = 0 #counter to run through colour names
     for color in colors:
 
@@ -78,8 +82,15 @@ def findColours(img,colors,color_vals):
         #displaying mask for testing purposes
         #cv2.imshow(str(col_names[count]),mask)
 
+        #returning coordonates that are not (0,0)
+        if x!=0 and y!=0:
+
+            #appending new points
+            newPoints.append([x,y,count]) #count is simply used as the color ID
+
         count = count + 1 #iterating counter
 
+    return newPoints #outputting new points to be stored
     #getContours(mask)
 
 #creating function that will get the bounding box of "on" pixels
@@ -116,6 +127,13 @@ def getContours(img):
     #returning the value of the tip
     return x+(w//2),y
 
+#creating a function to constantly re-draw the previously drawl points
+def draw(points,color_values):
+
+    #looping through each point to draw it on the output image
+    for point in points:
+        cv2.circle(imgOut,(point[0],point[1]),10,color_values[point[2]],cv2.FILLED)
+
 #continuously looping
 while True:
     #importing webcam feed frame to img
@@ -124,7 +142,21 @@ while True:
     #final output image
     imgOut = img.copy()
 
-    findColours(img,my_colours,color_values) #running function to capture colours
+    #Output of find Colours is stored as NewPoints
+    newPoints = findColours(img,my_colours,color_values) #running function to capture colours
+
+    #if there are new points present, do something with them
+    if len(newPoints)!=0:
+
+        #storing new points from last iteration in points list
+        for newPoint in newPoints:
+            points.append(newPoint) #storing non zero newPoint in points list
+
+    #looping through all non zero points and drawing them
+    if len(points)!=0:
+
+        #drawing points
+        draw(points,color_values)
 
     cv2.imshow("Result", imgOut)  # dispaying image frame in "Results window"
 
