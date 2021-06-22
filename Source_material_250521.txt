@@ -1,11 +1,10 @@
-https://www.youtube.com/watch?v=WQeoO7MI0Bs [Open CV course for python] - (in progress)
+https://www.youtube.com/watch?v=WQeoO7MI0Bs [OpenCV course for python] - (in progress)
 
-https://www.youtube.com/watch?v=6DjFscX4I_c[Completed] - (in progress)
+https://www.youtube.com/watch?v=6DjFscX4I_c[Text detection OpenCV] - (Completed)
 https://github.com/UB-Mannheim/tesseract/wiki [Tesseract OCR installer download]
 C:\Users\Jack\AppData\Local\Programs\Tesseract-OCR [Install directory]
 
-https://www.youtube.com/watch?v=y1ZrOs9s2QA [Text Detection using Neural Networks]
-https://www.youtube.com/watch?v=y1ZrOs9s2QA [Training digit detection]
+https://www.youtube.com/watch?v=y1ZrOs9s2QA [Text Detection using Neural Networks /Training digit detection] - (in progress)
 
 https://www.youtube.com/watch?v=SrZuwM705yE [Barcodes and QR codes]
 
