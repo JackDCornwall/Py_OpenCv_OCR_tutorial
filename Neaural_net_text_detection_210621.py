@@ -8,6 +8,7 @@
 #Date:21.06.21
 #Description: Running through this tutorial: https://www.youtube.com/watch?v=y1ZrOs9s2QA
 #Images can be found here: https://www.kaggle.com/scolianni/mnistasjpg or http://yann.lecun.com/exdb/mnist/ in raw form
+The tutorial uses pickle to export/import the trained model, however keras model.save models.load_model
 '''
 #importing require packages
 import numpy as np
@@ -21,17 +22,17 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 from keras.layers import Dropout,Flatten,Dense
 from keras.layers.convolutional import Conv2D, MaxPooling2D
-import pickle
+#import pickle
 
 #####################----Settings----#####################
-#path = "Training Data/trainingSet/TesttrainingSet" #for quicker testing (25 images per file)
-path = "Training Data/trainingSet/trainingSet" #for full set
+path = "Training Data/trainingSet/TesttrainingSet" #for quicker testing (25 images per file)
+#path = "Training Data/trainingSet/trainingSet" #for full set
 test_ratio = 0.1 #test fraction
 valid_ratio = 0.05 #validation fraction
 
 #declaring model training parameters
 batch = 100 #batch size from dataGen
-epoch = 20 #number of Epochs
+epoch = 2 #number of Epochs
 steps = None #steps per epoch set to None, the epoch will run until the dataset is exhausted.
 
 ##########################################################
@@ -254,10 +255,13 @@ score = model.evaluate(img_test,cat_test,verbose=0)
 print("The test score is equal to:",score[0])
 print("Test accuracy is equal to:",score[1])
 
-#saving model
-stored_model = open("Trained models/model_trained.p","wb") #creating pickle to store model (wb = write bytes)
-pickle.dump(model,stored_model) #dumping data
-stored_model.close() #ending pickle commands
+# #saving model
+# stored_model = open("Trained models/model_trained.p","wb") #creating pickle to store model (wb = write bytes)
+# pickle.dump(model,stored_model) #dumping data
+# stored_model.close() #ending pickle commands
+#using pickle package gives weakrf error
+
+model.save("Trained models/trained_model.h5") #exporting model for later use
 
 #end of code
 print("Code has run successfully")
