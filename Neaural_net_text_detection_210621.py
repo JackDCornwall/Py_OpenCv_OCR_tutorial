@@ -13,6 +13,7 @@
 import numpy as np
 import cv2
 import os
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils.np_utils import to_categorical
@@ -20,12 +21,19 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 from keras.layers import Dropout,Flatten,Dense
 from keras.layers.convolutional import Conv2D, MaxPooling2D
+import pickle
 
 #####################----Settings----#####################
-path = "Training Data/trainingSet/TesttrainingSet" #for quicker testing (25 images per file)
-#path = "Training Data/trainingSet/trainingSet" #for full set
-test_ratio = 0.2 #test fraction
+#path = "Training Data/trainingSet/TesttrainingSet" #for quicker testing (25 images per file)
+path = "Training Data/trainingSet/trainingSet" #for full set
+test_ratio = 0.1 #test fraction
 valid_ratio = 0.05 #validation fraction
+
+#declaring model training parameters
+batch = 100 #batch size from dataGen
+epoch = 20 #number of Epochs
+steps = None #steps per epoch set to None, the epoch will run until the dataset is exhausted.
+
 ##########################################################
 
 #defining function to preprocess images
@@ -209,6 +217,47 @@ def LeNet_Model():
 #creating model
 model = LeNet_Model()
 print(model.summary())
+
+#generating training set
+training_set = dataGen.flow(img_train,cat_train,batch_size=batch)
+
+#running the training using fit generator (in batches using images from dataGen)
+history = model.fit(training_set,
+                    steps_per_epoch=steps,
+                    epochs = epoch,
+                    validation_data = (img_valid,cat_valid),
+                    shuffle = 1
+                                 )
+
+#plotting loss over time
+plt.figure(1)
+plt.plot(history.history["loss"])
+plt.plot(history.history["val_loss"])
+plt.legend(["Training","Validation"])
+plt.title("Loss")
+plt.xlabel("Epoch")
+
+#plotting accuracy over time
+plt.figure(2)
+plt.plot(history.history["accuracy"])
+plt.plot(history.history["val_accuracy"])
+plt.legend(["Training","Validation"])
+plt.title("Accuracy")
+plt.xlabel("Epoch")
+
+plt.show()
+
+#calculating the score of our model using test data
+score = model.evaluate(img_test,cat_test,verbose=0)
+
+#system update
+print("The test score is equal to:",score[0])
+print("Test accuracy is equal to:",score[1])
+
+#saving model
+stored_model = open("Trained models/model_trained.p","wb") #creating pickle to store model (wb = write bytes)
+pickle.dump(model,stored_model) #dumping data
+stored_model.close() #ending pickle commands
 
 #end of code
 print("Code has run successfully")
