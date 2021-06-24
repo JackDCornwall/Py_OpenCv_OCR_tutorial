@@ -25,14 +25,14 @@ from keras.layers.convolutional import Conv2D, MaxPooling2D
 #import pickle
 
 #####################----Settings----#####################
-path = "Training Data/trainingSet/TesttrainingSet" #for quicker testing (25 images per file)
-#path = "Training Data/trainingSet/trainingSet" #for full set
+#path = "Training Data/trainingSet/TesttrainingSet" #for quicker testing (25 images per file)
+path = "Training Data/trainingSet/trainingSet" #for full set
 test_ratio = 0.1 #test fraction
 valid_ratio = 0.05 #validation fraction
 
 #declaring model training parameters
-batch = 100 #batch size from dataGen
-epoch = 2 #number of Epochs
+batch = 50 #batch size from dataGen
+epoch = 100 #number of Epochs
 steps = None #steps per epoch set to None, the epoch will run until the dataset is exhausted.
 
 ##########################################################
@@ -230,23 +230,23 @@ history = model.fit(training_set,
                     shuffle = 1
                                  )
 
-#plotting loss over time
-plt.figure(1)
-plt.plot(history.history["loss"])
-plt.plot(history.history["val_loss"])
-plt.legend(["Training","Validation"])
-plt.title("Loss")
-plt.xlabel("Epoch")
-
-#plotting accuracy over time
-plt.figure(2)
-plt.plot(history.history["accuracy"])
-plt.plot(history.history["val_accuracy"])
-plt.legend(["Training","Validation"])
-plt.title("Accuracy")
-plt.xlabel("Epoch")
-
-plt.show()
+# #plotting loss over time
+# plt.figure(1)
+# plt.plot(history.history["loss"])
+# plt.plot(history.history["val_loss"])
+# plt.legend(["Training","Validation"])
+# plt.title("Loss")
+# plt.xlabel("Epoch")
+#
+# #plotting accuracy over time
+# plt.figure(2)
+# plt.plot(history.history["accuracy"])
+# plt.plot(history.history["val_accuracy"])
+# plt.legend(["Training","Validation"])
+# plt.title("Accuracy")
+# plt.xlabel("Epoch")
+#
+# plt.show()
 
 #calculating the score of our model using test data
 score = model.evaluate(img_test,cat_test,verbose=0)
